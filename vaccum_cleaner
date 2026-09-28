@@ -1,0 +1,63 @@
+import random
+import time
+
+
+class VacuumEnvironment:
+    def __init__(self):
+        self.locations = {
+            'A': 1,
+            'B': 0
+        }
+        self.vacuum_location = "A"
+        self.cost = 0 
+
+    def display_status(self):
+        print(f"Current State -> Room A: {'DIRTY' if self.locations['A'] else 'CLEAN'} | "
+              f"Room B: {'DIRTY' if self.locations['B'] else 'CLEAN'}")
+        print(f"Vacuum Location: Room {self.vacuum_location}\n" + "-"*40)
+
+
+class ReflexVacuumAgent:
+    def __init__(self):
+        pass
+
+    def act(self, environment):
+        environment.display_status()
+       
+        if environment.locations['A'] == 0 and environment.locations['B'] == 0:
+            print(" Success! Both rooms are completely clean.")
+            return False
+
+        current_room = environment.vacuum_location
+        room_status = environment.locations[current_room]
+
+        if room_status == 1:
+            print(f"Action: Room {current_room} is DIRTY. Sucking dirt...")
+            time.sleep(1)
+            environment.locations[current_room] = 0
+            print(f" Room {current_room} is now CLEAN.")
+       
+        else:
+            if current_room == 'A':
+                print("Action: Room A is clean. Moving RIGHT to Room B.")
+                environment.vacuum_location = 'B'
+            else:
+                print("Action: Room B is clean. Moving LEFT to Room A.")
+                environment.vacuum_location = 'A'
+       
+        environment.cost += 1
+        print(f"Accumulated Path Cost: {environment.cost}\n")
+        return True
+
+
+if __name__ == "__main__":
+    print(" Initializing Vacuum Cleaner AI Environment...\n")
+    env = VacuumEnvironment()
+    agent = ReflexVacuumAgent()
+   
+    running = True
+    while running:
+        running = agent.act(env)
+        time.sleep(1)
+       
+    print(f"\nFinal Statistics: Total actions taken = {env.cost}")
